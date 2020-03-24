@@ -1,0 +1,61 @@
+<?php
+
+
+
+function reservation_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+
+//  dpm( $form_state);
+//  ksm( $form['body']) ;
+//kint($form_id);
+
+
+
+if ($form_id == 'node_article_form') {
+  $form['title']['widget']['0']['value']['#required'] = true ;
+  $form['title']['widget']['0']['value']['#placeholder'] = " Nom Voiture  ";
+  $form['title']['widget'][0]['value']['#title'] = t('Nom Voiture');
+
+}
+
+if ($form_id == 'node_agence_form') {
+  $form['title']['widget']['0']['value']['#required'] = true ;
+  $form['title']['widget']['0']['value']['#placeholder'] = " Nom Agence ";
+  $form['title']['widget'][0]['value']['#title'] = t('Nom Agence');
+//  $form['body']['widget'][0]['value']['#title'] = 'Description Agence';
+
+}
+if ($form_id == 'webform_submission_reservez_maintenant_add_form') {
+   $values = $form_state->getUserInput();
+
+
+   if (isset( $values['nom_voiture'])){
+     $voiture = $values['nom_voiture'] ;
+
+
+   $date_deb = strtotime($values['date_deb_location']['date']);
+//   $newformat = date('Y-m-d',$date_deb);
+   $date_fin = strtotime($values['date_fin_location']['date']);
+   $time_fin = (int) substr(($values['date_fin_location']['time']) , 0,2);
+
+  // $newformatfin = date('Y-m-d',$date_fin);
+
+   $d = abs($date_fin - $date_deb) / 86400 ;
+
+
+  $node = \Drupal::entityTypeManager()->getStorage('node')->load($voiture);
+  $prix = (int) $node->get('field_prix')->getValue()[0]['value'];
+
+   if ($time_fin>12){
+     $d+=1;
+   }
+   $prixtotal = $d * $prix ;
+
+  // $form_state['prix_total']->setUserInput($prixtotal) ;
+kint ($form_state->getValues()); 
+  // $prix = $node['values'];
+//  die();
+}
+
+}
+
+}
